@@ -7,12 +7,8 @@ import paginationView from './view/paginationView.js';
 import bookmarksView from './view/bookmarksView.js';
 import addRecipeView from './view/addRecipeView.js';
 
-import 'core-js/stable'; //polyfill everything
-import 'regenerator-runtime/runtime'; // polyffill async
-
-// https://forkify-api.herokuapp.com/v2
-
-///////////////////////////////////////
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 if (module.hot) {
   module.hot.accept();
@@ -20,25 +16,22 @@ if (module.hot) {
 
 const controlRecipes = async function () {
   try {
-    const id = window.location.hash.slice(1); //#id, remove #, leave id
-    // console.log(id); //5ed6604591c37cdc054bca10
+    const id = window.location.hash.slice(1);
 
-    if (!id) return; //guard: at the beginning we don't have an id
+    if (!id) return;
     recipeView.renderSpinner();
 
     //1) Update results view to mark selected search results
     resultsView.update(model.getSearchResultsPage());
 
     //2) UPDATING BOOKMARKS VIEW
-    bookmarksView.update(model.state.bookmarks); //active bookmark is selected
+    bookmarksView.update(model.state.bookmarks);
 
     //3) LOADING RECIPE
-    await model.loadRecipe(id); // async is calling async (we need await)
+    await model.loadRecipe(id);
 
     //4) RENDERING RECIPE
     recipeView.render(model.state.recipe);
-    //TEST
-    // controlServings()
   } catch (err) {
     recipeView.renderError();
   }
@@ -49,15 +42,13 @@ const controlSearchResults = async function () {
     resultsView.renderSpinner();
 
     //1) Get search querry
-    const query = searchView.getQuery(); //query value
-    if (!query) return; //don't continue if there is no search query
+    const query = searchView.getQuery();
+    if (!query) return;
 
     //2) Load search results
     await model.loadSearchResults(query);
 
     //3) Render results
-    // console.log(model.state.search.results);
-    // resultsView.render(model.state.search.results);
     resultsView.render(model.getSearchResultsPage());
 
     // 4) Render initial pagination buttons
@@ -80,7 +71,6 @@ const controlServings = function (newServings) {
   model.updateServings(newServings);
 
   // Update the recipe view
-  // recipeView.render(model.state.recipe); //PROBLEM!
   recipeView.update(model.state.recipe);
 };
 
@@ -91,6 +81,7 @@ const controlAddBookmark = function () {
 
   // 2) Update recipe view
   recipeView.update(model.state.recipe);
+
   // 3) Render bookmarks
   bookmarksView.render(model.state.bookmarks);
 };
@@ -103,8 +94,6 @@ const controlAddRecipe = async function (newRecipe) {
   try {
     // Show loading spinner
     addRecipeView.renderSpinner();
-
-    console.log(newRecipe);
 
     // Upload a new recipe data
     await model.uploadRecipe(newRecipe);
@@ -121,8 +110,6 @@ const controlAddRecipe = async function (newRecipe) {
 
     // Change ID in URL
     window.history.pushState(null, '', `#${model.state.recipe.id}`);
-    // window.history.back(); // BACK - PREVIOUS PAGE
-    // window.history.forward(); // FORWARD - NEXT PAGE
 
     // Close form window
     setTimeout(function () {
@@ -134,10 +121,6 @@ const controlAddRecipe = async function (newRecipe) {
   }
 };
 
-const newFeature = function () {
-  console.log('Welcome to the application!');
-};
-
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
@@ -146,6 +129,5 @@ const init = function () {
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  newFeature();
 };
 init();

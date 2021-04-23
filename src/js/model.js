@@ -16,7 +16,7 @@ export const state = {
 
 const createRecipeObject = function (data) {
   // Create a recipe with renaming the properties
-  const { recipe } = data.data; // let recipe = data.data.recipe;
+  const { recipe } = data.data;
   return {
     id: recipe.id,
     title: recipe.title,
@@ -26,7 +26,7 @@ const createRecipeObject = function (data) {
     servings: recipe.servings,
     cookingTime: recipe.cooking_time,
     ingredients: recipe.ingredients,
-    ...(recipe.key && { key: recipe.key }), //ADD A KEY IF THERE IS A KEY
+    ...(recipe.key && { key: recipe.key }),
   };
 };
 
@@ -36,14 +36,10 @@ export const loadRecipe = async function (id) {
 
     state.recipe = createRecipeObject(data);
 
-    // console.log(res, data);
-
     // Keep the icon of the bookmarked
     if (state.bookmarks.some(bookmark => bookmark.id === id))
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
-
-    // console.log(state.recipe);
   } catch (err) {
     // Temp error handling:
     console.log(`${err} 💥💥💥`);
@@ -51,35 +47,33 @@ export const loadRecipe = async function (id) {
   }
 };
 
-// it performs AJAX calls, so it is async
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-    // console.log(data);
+
     // renaming recipes data
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
-        image: rec.image_url, //for recipes we have "image" name, so we rename
-        ...(rec.key && { key: rec.key }), //ADD A KEY IF THERE IS A KEY
+        image: rec.image_url,
+        ...(rec.key && { key: rec.key }),
       };
     });
-    // console.log(state.search.results); // check the results stored in state.search for pizza
-    state.search.page = 1; //reset search result
+    state.search.page = 1;
   } catch (err) {
     console.log(`${err} 💥💥💥`);
-    throw err; //throw to controller
+    throw err;
   }
 };
 
 export const getSearchResultsPage = function (page = state.search.page) {
-  state.search.page = page; //we store the page number in state
+  state.search.page = page;
 
-  const start = (page - 1) * 10; //0
-  const end = page * 10; //9
+  const start = (page - 1) * 10;
+  const end = page * 10;
 
   return state.search.results.slice(start, end);
 };
@@ -123,12 +117,10 @@ const init = function () {
   if (storage) state.bookmarks = JSON.parse(storage);
 };
 init();
-// console.log(state.bookmarks);
 
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
 };
-// clearBookmarks();
 
 export const uploadRecipe = async function (newRecipe) {
   try {
@@ -154,7 +146,6 @@ export const uploadRecipe = async function (newRecipe) {
       servings: +newRecipe.servings,
       ingredients,
     };
-    // console.log(recipe);
     const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
     console.log(data);
 

@@ -3,7 +3,6 @@ import View from './View.js';
 // import icons from '../img/icons.svg' //Parcel1
 import icons from 'url:../../img/icons.svg'; //Parcel2
 import { Fraction } from 'fractional';
-// console.log(Fraction); // check the imported package function
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
@@ -18,8 +17,7 @@ class RecipeView extends View {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--update-servings');
       if (!btn) return;
-      // console.log(btn) //check if we are pressing btn;
-      const { updateTo } = btn.dataset; //no destructuring if here is +
+      const { updateTo } = btn.dataset;
 
       if (+updateTo > 0) handler(+updateTo);
     });

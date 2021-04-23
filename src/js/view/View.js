@@ -19,7 +19,7 @@ export default class View {
     this._data = data;
     const markup = this._generateMarkup();
 
-    if (!render) return markup; // IMPORTANT
+    if (!render) return markup;
 
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
@@ -34,14 +34,12 @@ export default class View {
     const curElements = Array.from(this._parentElement.querySelectorAll('*'));
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
-      // console.log(curEl, newEl.isEqualNode(curEl));
 
       //Updates changed TEXT
       if (
         !newEl.isEqualNode(curEl) &&
         newEl.firstChild?.nodeValue.trim() !== ''
       ) {
-        // console.log('💥', newEl.firstChild.nodeValue.trim());
         curEl.textContent = newEl.textContent;
       }
       //Updates changed ATTRIBUTES
@@ -65,7 +63,7 @@ export default class View {
         </svg>
       </div>`;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup); //insert html to parent
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
   };
 
   renderError(message = this._errorMessage) {
@@ -79,7 +77,7 @@ export default class View {
           <p>${message}</p>
         </div>`;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup); //insert html to parent
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
   renderMessage(message = this._message) {
@@ -93,6 +91,6 @@ export default class View {
           <p>${message}</p>
         </div>`;
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup); //insert html to parent
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 }
